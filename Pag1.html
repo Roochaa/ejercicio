@@ -1,63 +1,1778 @@
+```html
 <html>
     <head>
 
+        <title>Juego Arduino</title>
+
+        <style>
+
+            body {
+                background-color: #1a1a1a;
+                color: white;
+                font-family: Arial, sans-serif;
+                text-align: center;
+                margin: 0;
+                padding: 20px;
+            }
+
+            a {
+                color: #66ccff;
+                margin: 10px;
+                text-decoration: none;
+            }
+
+            a:hover {
+                text-decoration: underline;
+            }
+
+            h1 {
+                color: #0f0;
+            }
+
+
+            /* =========================
+               ZONA DEL JUEGO
+            ========================= */
+
+            #juego {
+                width: 90%;
+                max-width: 850px;
+                margin: 40px auto;
+                padding: 30px;
+                background-color: #222;
+                border: 3px solid #444;
+                border-radius: 20px;
+                box-shadow: 0 0 25px #000;
+            }
+
+            #tituloJuego {
+                color: #0f0;
+                font-size: 32px;
+                margin-bottom: 25px;
+            }
+
+            #juegoActual {
+                color: white;
+                font-size: 20px;
+                margin-bottom: 20px;
+            }
+
+
+            /* =========================
+               LCD
+            ========================= */
+
+            #lcd-frame {
+                width: 420px;
+                max-width: 90%;
+                margin: 20px auto;
+                padding: 15px;
+                background-color: #111;
+                border: 8px solid #333;
+                border-radius: 10px;
+                box-shadow: 0 0 20px #0f0;
+            }
+
+            #lcd {
+                width: 100%;
+                height: 120px;
+                box-sizing: border-box;
+                background-color: #9bcf5b;
+                color: #172000;
+                border: 4px solid #3a4d23;
+                font-family: monospace;
+                font-size: 26px;
+                font-weight: bold;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                text-align: left;
+                padding-left: 15px;
+                overflow: hidden;
+            }
+
+            #linea1,
+            #linea2 {
+                height: 40px;
+                white-space: nowrap;
+            }
+
+
+            /* =========================
+               LUCES
+            ========================= */
+
+            #luces {
+                display: flex;
+                justify-content: center;
+                gap: 35px;
+                margin: 35px auto;
+            }
+
+            .luz {
+                width: 90px;
+                height: 90px;
+                border-radius: 50%;
+                background-color: #111;
+                border: 6px solid #555;
+                box-shadow: inset 0 0 15px #000;
+                transition: 0.15s;
+            }
+
+            #verde.encendida {
+                background-color: #00ff00;
+                box-shadow: 0 0 35px #00ff00;
+            }
+
+            #amarillo.encendida {
+                background-color: #ffff00;
+                box-shadow: 0 0 35px #ffff00;
+            }
+
+            #rojo.encendida {
+                background-color: #ff0000;
+                box-shadow: 0 0 35px #ff0000;
+            }
+
+
+            /* =========================
+               BOTONES
+            ========================= */
+
+            #botones {
+                display: flex;
+                justify-content: center;
+                flex-wrap: wrap;
+                gap: 15px;
+                margin-top: 30px;
+            }
+
+            .boton {
+                width: 150px;
+                height: 60px;
+                border: none;
+                border-radius: 12px;
+                color: white;
+                font-size: 18px;
+                font-weight: bold;
+                cursor: pointer;
+                transition: 0.15s;
+            }
+
+            .boton:hover {
+                transform: scale(1.05);
+            }
+
+            .boton:active {
+                transform: scale(0.95);
+            }
+
+            #botonVerde {
+                background-color: #087f23;
+            }
+
+            #botonAmarillo {
+                background-color: #a8a800;
+            }
+
+            #botonRojo {
+                background-color: #a00000;
+            }
+
+
+            /* =========================
+               MENU
+            ========================= */
+
+            #menuJuegos {
+                margin: 25px auto;
+                display: flex;
+                justify-content: center;
+                flex-wrap: wrap;
+                gap: 15px;
+            }
+
+            .menuBoton {
+                background-color: #333;
+                color: white;
+                border: 2px solid #0f0;
+                padding: 15px 25px;
+                border-radius: 10px;
+                font-size: 17px;
+                cursor: pointer;
+            }
+
+            .menuBoton:hover {
+                background-color: #0f0;
+                color: #111;
+            }
+
+
+            /* =========================
+               RESULTADO
+            ========================= */
+
+            #informacion {
+                margin-top: 30px;
+                color: #aaa;
+                font-size: 18px;
+            }
+
+            #resultado {
+                color: #0f0;
+                font-size: 24px;
+                font-weight: bold;
+                min-height: 35px;
+            }
+
+
+            /* =========================
+               RANKING
+            ========================= */
+
+            #rankings {
+                width: 90%;
+                max-width: 850px;
+                margin: 40px auto;
+                padding: 30px;
+                background-color: #222;
+                border: 3px solid #444;
+                border-radius: 20px;
+                box-shadow: 0 0 25px #000;
+            }
+
+            #rankings h2 {
+                color: #0f0;
+                font-size: 30px;
+            }
+
+            .rankingJuego {
+                background-color: #111;
+                border: 2px solid #444;
+                border-radius: 15px;
+                margin: 25px 0;
+                padding: 20px;
+            }
+
+            .rankingJuego h3 {
+                color: #0f0;
+                font-size: 24px;
+            }
+
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 15px;
+            }
+
+            th {
+                background-color: #333;
+                color: #0f0;
+                padding: 12px;
+            }
+
+            td {
+                padding: 12px;
+                border-bottom: 1px solid #444;
+            }
+
+            tr:nth-child(1) td {
+                color: gold;
+                font-weight: bold;
+            }
+
+            tr:nth-child(2) td {
+                color: silver;
+            }
+
+            tr:nth-child(3) td {
+                color: #cd7f32;
+            }
+
+
+            /* =========================
+               RESPONSIVE
+            ========================= */
+
+            @media (max-width: 600px) {
+
+                #luces {
+                    gap: 10px;
+                }
+
+                .luz {
+                    width: 65px;
+                    height: 65px;
+                }
+
+                #lcd {
+                    font-size: 20px;
+                }
+
+                table {
+                    font-size: 14px;
+                }
+
+            }
+
+        </style>
+
     </head>
+
+
     <body>
+
         <a href="index.html">Menú</a>
         <a href="Pag2.html">Página 2</a>
         
         <h1>
             HTML
         </h1>
-                <strong>HTML</strong> son las siglas de <em>HyperText Markup Language</em>, que puede traducirse como lenguaje de marcas o marcado de hipertexto.
-            <p></p>
-            El lenguaje <strong>HTML</strong> se emplea para crear las páginas web. Es muy fácil ver el código <strong>HTML</strong> de una página web, la opción exacta cambia de un navegador a otro y también puede cambiar de una versión a otra de un mismo navegador, pero suelen tener un nombre similar.
-            <p></p>
-            <strong>HTML</strong> se compone de etiquetas que se escriben entre los símbolos menor que y mayor que.
-            <p></p>
-            <h1>
-           Historia de HTML
-            </h1>
-            <p></p>
-            Los inicios del lenguaje <strong>HTML</strong> se remontan al año 1990, cuando <em>Tim Berners-Lee</em> creó la primera página web.    
-            <p>
-            <h1>
-            Versiones de HTML
-            </h1>
-            </p>
-            <p>
-            Tim Berners-Lee definió la primera versión de <strong>HTML</strong> en el año 1991
-            </p>
-            <p>
-            En la actualidad la última versión de <strong>HTML</strong> es HTML5
-            </p>
-            <ul>
-                <li>JavaScript</li>
-                <br>
-                <li>CSS</li>
-                <br>
-                <li>DOM</li>
-                <br>
-                <li>SVG</ili>
-                <br>
-            </ul>
-            <ol>
-                <li>Html</li>
-                <br>
-                <li>JavaScript</li>
-                <br>
-                <li>CSS</li>
-                <br>
-                <li>DOM</li>
-                <br>
-                <li>SVG</li>
-                <br>
-            </ol>
-        </p>
 
-        <a href="https://es.wikipedia.org/wiki/Tim_Berners-Lee">Pincha aqui</a>
+        <a href="https://es.wikipedia.org/wiki/Tim_Berners-Lee">
+            Pincha aqui
+        </a>
 
-        <img src="./img/Sir_Tim_Berners-Lee_(cropped).jpg" alt="Tim Berners-Lee" width="500" height="600">
-        
+        <br><br>
+
+        <img src="./img/Sir_Tim_Berners-Lee_(cropped).jpg"
+             alt="Tim Berners-Lee"
+             width="500"
+             height="600">
+
+
+        <!-- =====================================
+             JUEGO
+        ====================================== -->
+
+        <div id="juego">
+
+            <div id="tituloJuego">
+                JUEGO ARDUINO
+            </div>
+
+
+            <div id="juegoActual">
+                Selecciona un juego
+            </div>
+
+
+            <!-- MENU -->
+
+            <div id="menuJuegos">
+
+                <button class="menuBoton"
+                        onclick="iniciarReflejos()">
+                    A: Reflejos
+                </button>
+
+                <button class="menuBoton"
+                        onclick="iniciarSimon()">
+                    V: Simon Dice
+                </button>
+
+                <button class="menuBoton"
+                        onclick="iniciarReaccion()">
+                    R: Tiempo Reacción
+                </button>
+
+            </div>
+
+
+            <!-- LCD -->
+
+            <div id="lcd-frame">
+
+                <div id="lcd">
+
+                    <div id="linea1">
+                        A: Reflejos
+                    </div>
+
+                    <div id="linea2">
+                        V: Simon R:React
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- LUCES -->
+
+            <h2>Luces</h2>
+
+            <div id="luces">
+
+                <div id="verde" class="luz"></div>
+
+                <div id="amarillo" class="luz"></div>
+
+                <div id="rojo" class="luz"></div>
+
+            </div>
+
+
+            <!-- BOTONES -->
+
+            <h2>Controles</h2>
+
+            <div id="botones">
+
+                <button id="botonVerde"
+                        class="boton"
+                        onclick="pulsar(1)">
+                    VERDE
+                </button>
+
+                <button id="botonAmarillo"
+                        class="boton"
+                        onclick="pulsar(2)">
+                    AMARILLO
+                </button>
+
+                <button id="botonRojo"
+                        class="boton"
+                        onclick="pulsar(3)">
+                    ROJO
+                </button>
+
+            </div>
+
+
+            <!-- RESULTADO -->
+
+            <div id="informacion">
+
+                <p id="resultado"></p>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================
+             RANKING
+        ====================================== -->
+
+        <div id="rankings">
+
+            <h2>🏆 RANKING</h2>
+
+
+            <!-- REFLEJOS -->
+
+            <div class="rankingJuego">
+
+                <h3>⚡ Reflejos</h3>
+
+                <p>
+                    Más luces apagadas = mejor
+                </p>
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+                            <th>Posición</th>
+                            <th>Nombre</th>
+                            <th>Luces</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="rankingReflejos">
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+            <!-- SIMON -->
+
+            <div class="rankingJuego">
+
+                <h3>🧠 Simon Dice</h3>
+
+                <p>
+                    Mayor nivel = mejor
+                </p>
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+                            <th>Posición</th>
+                            <th>Nombre</th>
+                            <th>Nivel</th>
+                            <th>Fallos</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="rankingSimon">
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+            <!-- REACCION -->
+
+            <div class="rankingJuego">
+
+                <h3>⚡ Tiempo de Reacción</h3>
+
+                <p>
+                    Menor tiempo = mejor
+                </p>
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+                            <th>Posición</th>
+                            <th>Nombre</th>
+                            <th>Media</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="rankingReaccion">
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =====================================
+             JAVASCRIPT
+        ====================================== -->
+
+        <script>
+
+
+            /* =========================
+               VARIABLES GENERALES
+            ========================= */
+
+            let juego = "";
+
+            let contadorApagadas = 0;
+
+            let luzActual = 0;
+
+
+            /* =========================
+               VARIABLES REFLEJOS
+            ========================= */
+
+            let tiempoReflejos = 60;
+
+            let intervaloReflejos = null;
+
+            let inicioReflejos = null;
+
+
+            /* =========================
+               VARIABLES SIMON
+            ========================= */
+
+            let secuencia = [];
+
+            let nivelSimon = 1;
+
+            let posicionSimon = 0;
+
+            let fallosSimon = 0;
+
+            let mostrandoSecuencia = false;
+
+
+            /* =========================
+               VARIABLES REACCION
+            ========================= */
+
+            let inicioReaccion = 0;
+
+            let intentosReaccion = 0;
+
+            let sumaReaccion = 0;
+
+            let temporizadorReaccion = null;
+
+
+            /* =========================
+               RANKINGS
+            ========================= */
+
+            let rankingReflejos = [];
+
+            let rankingSimon = [];
+
+            let rankingReaccion = [];
+
+
+            /* ==================================================
+               LCD
+            ================================================== */
+
+            function lcd(linea1, linea2) {
+
+                document.getElementById("linea1").innerText =
+                    linea1;
+
+                document.getElementById("linea2").innerText =
+                    linea2;
+
+            }
+
+
+            /* ==================================================
+               CAMBIAR JUEGO
+            ================================================== */
+
+            function cambiarJuego(nombre) {
+
+                document.getElementById("juegoActual").innerText =
+                    "Juego actual: " + nombre;
+
+                document.getElementById("resultado").innerText = "";
+
+            }
+
+
+            /* ==================================================
+               APAGAR LUCES
+            ================================================== */
+
+            function apagarLuces() {
+
+                document.getElementById("verde")
+                    .classList.remove("encendida");
+
+                document.getElementById("amarillo")
+                    .classList.remove("encendida");
+
+                document.getElementById("rojo")
+                    .classList.remove("encendida");
+
+                luzActual = 0;
+
+            }
+
+
+            /* ==================================================
+               ENCENDER LUZ
+            ================================================== */
+
+            function prenderLuz(n) {
+
+                apagarLuces();
+
+
+                if (n == 1) {
+
+                    document.getElementById("verde")
+                        .classList.add("encendida");
+
+                }
+
+
+                if (n == 2) {
+
+                    document.getElementById("amarillo")
+                        .classList.add("encendida");
+
+                }
+
+
+                if (n == 3) {
+
+                    document.getElementById("rojo")
+                        .classList.add("encendida");
+
+                }
+
+
+                luzActual = n;
+
+            }
+
+
+            /* ==================================================
+               PULSAR
+            ================================================== */
+
+            function pulsar(n) {
+
+                if (juego == "reflejos") {
+
+                    jugarReflejos(n);
+
+                }
+
+
+                if (juego == "simon") {
+
+                    jugarSimon(n);
+
+                }
+
+
+                if (juego == "reaccion") {
+
+                    jugarReaccion(n);
+
+                }
+
+            }
+
+
+            /* ==================================================
+               PARAR JUEGO ANTERIOR
+            ================================================== */
+
+            function pararJuegoAnterior() {
+
+                if (intervaloReflejos !== null) {
+
+                    clearInterval(intervaloReflejos);
+
+                    intervaloReflejos = null;
+
+                }
+
+
+                if (temporizadorReaccion !== null) {
+
+                    clearTimeout(temporizadorReaccion);
+
+                    temporizadorReaccion = null;
+
+                }
+
+
+                juego = "";
+
+                mostrandoSecuencia = false;
+
+                apagarLuces();
+
+            }
+
+
+            /* ==================================================
+               JUEGO 1
+               REFLEJOS
+            ================================================== */
+
+            function iniciarReflejos() {
+
+                pararJuegoAnterior();
+
+
+                juego = "reflejos";
+
+                contadorApagadas = 0;
+
+                tiempoReflejos = 60;
+
+                cambiarJuego("REFLEJOS");
+
+
+                lcd(
+                    "Reflejos!",
+                    "Preparado..."
+                );
+
+
+                setTimeout(function() {
+
+                    if (juego != "reflejos") {
+                        return;
+                    }
+
+
+                    lcd(
+                        "Tiempo: 60s",
+                        "Apagadas: 0"
+                    );
+
+
+                    nuevoReflejo();
+
+
+                    /* IMPORTANTE:
+                       El temporizador se crea UNA SOLA VEZ */
+
+                    inicioReflejos = Date.now();
+
+
+                    intervaloReflejos =
+                        setInterval(function() {
+
+                            if (juego != "reflejos") {
+
+                                clearInterval(
+                                    intervaloReflejos
+                                );
+
+                                intervaloReflejos = null;
+
+                                return;
+
+                            }
+
+
+                            let transcurrido =
+                                Math.floor(
+                                    (Date.now() -
+                                    inicioReflejos) /
+                                    1000
+                                );
+
+
+                            tiempoReflejos =
+                                60 - transcurrido;
+
+
+                            if (tiempoReflejos < 0) {
+
+                                tiempoReflejos = 0;
+
+                            }
+
+
+                            lcd(
+                                "Tiempo: " +
+                                tiempoReflejos +
+                                "s",
+                                "Apagadas: " +
+                                contadorApagadas
+                            );
+
+
+                            if (tiempoReflejos <= 0) {
+
+                                clearInterval(
+                                    intervaloReflejos
+                                );
+
+                                intervaloReflejos = null;
+
+
+                                apagarLuces();
+
+
+                                lcd(
+                                    "Tiempo agotado!",
+                                    "Apagadas:" +
+                                    contadorApagadas
+                                );
+
+
+                                juego = "";
+
+
+                                terminarReflejos();
+
+                            }
+
+                        }, 100);
+
+                }, 800);
+
+            }
+
+
+            function nuevoReflejo() {
+
+                if (juego != "reflejos") {
+                    return;
+                }
+
+
+                let nuevaLuz =
+                    Math.floor(
+                        Math.random() * 3
+                    ) + 1;
+
+
+                prenderLuz(nuevaLuz);
+
+            }
+
+
+            function jugarReflejos(boton) {
+
+                if (juego != "reflejos") {
+                    return;
+                }
+
+
+                if (boton == luzActual) {
+
+                    contadorApagadas++;
+
+
+                    apagarLuces();
+
+
+                    lcd(
+                        "Tiempo: " +
+                        tiempoReflejos +
+                        "s",
+                        "Apagadas: " +
+                        contadorApagadas
+                    );
+
+
+                    /* Solo cambiamos de luz.
+                       NO reiniciamos el temporizador. */
+
+                    setTimeout(function() {
+
+                        if (juego == "reflejos") {
+
+                            nuevoReflejo();
+
+                        }
+
+                    }, 200);
+
+                }
+
+            }
+
+
+            function terminarReflejos() {
+
+                document.getElementById(
+                    "resultado"
+                ).innerText =
+                    "Has conseguido " +
+                    contadorApagadas +
+                    " luces apagadas.";
+
+
+                guardarReflejos(
+                    contadorApagadas
+                );
+
+            }
+
+
+            /* ==================================================
+               JUEGO 2
+               SIMON DICE
+            ================================================== */
+
+            function iniciarSimon() {
+
+                pararJuegoAnterior();
+
+
+                juego = "simon";
+
+                cambiarJuego("SIMON DICE");
+
+
+                secuencia = [];
+
+                nivelSimon = 1;
+
+                posicionSimon = 0;
+
+                fallosSimon = 0;
+
+                mostrandoSecuencia = false;
+
+
+                /* Creamos TODA la secuencia al principio */
+
+                for (let i = 0; i < 10; i++) {
+
+                    secuencia.push(
+                        Math.floor(
+                            Math.random() * 3
+                        ) + 1
+                    );
+
+                }
+
+
+                mostrarNivelSimon();
+
+            }
+
+
+            function mostrarNivelSimon() {
+
+                if (juego != "simon") {
+                    return;
+                }
+
+
+                posicionSimon = 0;
+
+                mostrandoSecuencia = true;
+
+                apagarLuces();
+
+
+                lcd(
+                    "Nivel " +
+                    nivelSimon,
+                    "Memoriza..."
+                );
+
+
+                setTimeout(function() {
+
+                    mostrarSecuenciaCompleta();
+
+                }, 1000);
+
+            }
+
+
+            /* ==============================================
+               ESTA ES LA PARTE IMPORTANTE DE SIMON
+               
+               Se muestra:
+               luz 1
+               luz 2
+               luz 3
+               ...
+               
+               Después se da el turno al jugador.
+            ============================================== */
+
+            function mostrarSecuenciaCompleta() {
+
+                if (juego != "simon") {
+                    return;
+                }
+
+
+                let posicion = 0;
+
+
+                function siguienteLuzSimon() {
+
+                    if (juego != "simon") {
+                        return;
+                    }
+
+
+                    if (posicion >= nivelSimon) {
+
+                        apagarLuces();
+
+                        mostrandoSecuencia = false;
+
+                        posicionSimon = 0;
+
+
+                        lcd(
+                            "Tu turno",
+                            "Repite " +
+                            nivelSimon
+                        );
+
+
+                        return;
+
+                    }
+
+
+                    let luz =
+                        secuencia[posicion];
+
+
+                    prenderLuz(luz);
+
+
+                    setTimeout(function() {
+
+                        apagarLuces();
+
+
+                        setTimeout(function() {
+
+                            posicion++;
+
+                            siguienteLuzSimon();
+
+                        }, 250);
+
+                    }, 500);
+
+                }
+
+
+                siguienteLuzSimon();
+
+            }
+
+
+            function jugarSimon(boton) {
+
+                if (juego != "simon") {
+                    return;
+                }
+
+
+                /* No se puede pulsar mientras
+                   se está mostrando la secuencia */
+
+                if (mostrandoSecuencia) {
+                    return;
+                }
+
+
+                prenderLuz(boton);
+
+
+                setTimeout(function() {
+
+                    apagarLuces();
+
+                }, 200);
+
+
+                /* Comprobamos la posición actual */
+
+                if (
+                    boton !=
+                    secuencia[posicionSimon]
+                ) {
+
+                    fallosSimon++;
+
+
+                    lcd(
+                        "Perdiste!",
+                        "Nivel " +
+                        nivelSimon
+                    );
+
+
+                    document.getElementById(
+                        "resultado"
+                    ).innerText =
+                        "Has perdido en el nivel " +
+                        nivelSimon +
+                        " con " +
+                        fallosSimon +
+                        " fallo.";
+
+
+                    juego = "";
+
+
+                    guardarSimon(
+                        nivelSimon,
+                        fallosSimon
+                    );
+
+
+                    return;
+
+                }
+
+
+                /* La pulsación es correcta */
+
+                posicionSimon++;
+
+
+                lcd(
+                    "Correcto",
+                    posicionSimon +
+                    "/" +
+                    nivelSimon
+                );
+
+
+                /* Ha terminado el nivel */
+
+                if (
+                    posicionSimon ==
+                    nivelSimon
+                ) {
+
+
+                    /* Ha conseguido el nivel 10 */
+
+                    if (nivelSimon == 10) {
+
+                        lcd(
+                            "Ganaste!",
+                            "Nivel:10"
+                        );
+
+
+                        document.getElementById(
+                            "resultado"
+                        ).innerText =
+                            "¡Has completado los 10 niveles!";
+
+
+                        juego = "";
+
+
+                        guardarSimon(
+                            10,
+                            fallosSimon
+                        );
+
+
+                        return;
+
+                    }
+
+
+                    /* Siguiente nivel */
+
+                    nivelSimon++;
+
+
+                    setTimeout(function() {
+
+                        if (juego == "simon") {
+
+                            mostrarNivelSimon();
+
+                        }
+
+                    }, 1000);
+
+                }
+
+            }
+
+
+            /* ==================================================
+               JUEGO 3
+               TIEMPO DE REACCION
+            ================================================== */
+
+            function iniciarReaccion() {
+
+                pararJuegoAnterior();
+
+
+                juego = "reaccion";
+
+                cambiarJuego(
+                    "TIEMPO DE REACCION"
+                );
+
+
+                intentosReaccion = 0;
+
+                sumaReaccion = 0;
+
+
+                siguienteReaccion();
+
+            }
+
+
+            function siguienteReaccion() {
+
+                if (juego != "reaccion") {
+                    return;
+                }
+
+
+                if (
+                    intentosReaccion >= 4
+                ) {
+
+                    let media =
+                        Math.floor(
+                            sumaReaccion / 4
+                        );
+
+
+                    apagarLuces();
+
+
+                    lcd(
+                        "Media:" +
+                        media +
+                        " ms",
+                        "Fin partida"
+                    );
+
+
+                    document.getElementById(
+                        "resultado"
+                    ).innerText =
+                        "Tiempo medio: " +
+                        media +
+                        " ms";
+
+
+                    juego = "";
+
+
+                    guardarReaccion(media);
+
+
+                    return;
+
+                }
+
+
+                lcd(
+                    "Intento " +
+                    (intentosReaccion + 1),
+                    "Espera..."
+                );
+
+
+                apagarLuces();
+
+
+                let espera =
+                    Math.floor(
+                        Math.random() * 3500
+                    ) + 1500;
+
+
+                temporizadorReaccion =
+                    setTimeout(function() {
+
+                        if (juego != "reaccion") {
+                            return;
+                        }
+
+
+                        let luz =
+                            Math.floor(
+                                Math.random() * 3
+                            ) + 1;
+
+
+                        prenderLuz(luz);
+
+
+                        inicioReaccion =
+                            Date.now();
+
+
+                    }, espera);
+
+            }
+
+
+            function jugarReaccion(boton) {
+
+                if (juego != "reaccion") {
+                    return;
+                }
+
+
+                if (luzActual == 0) {
+                    return;
+                }
+
+
+                if (boton == luzActual) {
+
+                    let tiempo =
+                        Date.now() -
+                        inicioReaccion;
+
+
+                    sumaReaccion += tiempo;
+
+                    intentosReaccion++;
+
+
+                    apagarLuces();
+
+
+                    lcd(
+                        "Tiempo:",
+                        tiempo + " ms"
+                    );
+
+
+                    setTimeout(function() {
+
+                        siguienteReaccion();
+
+                    }, 1200);
+
+                }
+
+            }
+
+
+            /* ==================================================
+               RANKING - REFLEJOS
+            ================================================== */
+
+            function guardarReflejos(puntos) {
+
+                let nombre =
+                    prompt(
+                        "¡Partida terminada!\n\n" +
+                        "Has apagado " +
+                        puntos +
+                        " luces.\n\n" +
+                        "Escribe tu nombre:"
+                    );
+
+
+                if (
+                    nombre === null ||
+                    nombre.trim() == ""
+                ) {
+
+                    return;
+
+                }
+
+
+                nombre = nombre.trim();
+
+
+                rankingReflejos.push({
+
+                    nombre: nombre,
+
+                    puntos: puntos
+
+                });
+
+
+                rankingReflejos.sort(
+                    function(a, b) {
+
+                        return b.puntos -
+                               a.puntos;
+
+                    }
+                );
+
+
+                rankingReflejos =
+                    rankingReflejos.slice(
+                        0,
+                        5
+                    );
+
+
+                mostrarRankingReflejos();
+
+            }
+
+
+            function mostrarRankingReflejos() {
+
+                let tabla =
+                    document.getElementById(
+                        "rankingReflejos"
+                    );
+
+
+                tabla.innerHTML = "";
+
+
+                for (
+                    let i = 0;
+                    i < rankingReflejos.length;
+                    i++
+                ) {
+
+                    let fila =
+                        document.createElement(
+                            "tr"
+                        );
+
+
+                    fila.innerHTML =
+                        "<td>" +
+                        (i + 1) +
+                        "</td>" +
+
+                        "<td>" +
+                        rankingReflejos[i].nombre +
+                        "</td>" +
+
+                        "<td>" +
+                        rankingReflejos[i].puntos +
+                        "</td>";
+
+
+                    tabla.appendChild(fila);
+
+                }
+
+            }
+
+
+            /* ==================================================
+               RANKING - SIMON
+            ================================================== */
+
+            function guardarSimon(
+                nivel,
+                fallos
+            ) {
+
+                let nombre =
+                    prompt(
+                        "¡Partida terminada!\n\n" +
+                        "Nivel alcanzado: " +
+                        nivel +
+                        "\n" +
+                        "Fallos: " +
+                        fallos +
+                        "\n\n" +
+                        "Escribe tu nombre:"
+                    );
+
+
+                if (
+                    nombre === null ||
+                    nombre.trim() == ""
+                ) {
+
+                    return;
+
+                }
+
+
+                nombre = nombre.trim();
+
+
+                rankingSimon.push({
+
+                    nombre: nombre,
+
+                    nivel: nivel,
+
+                    fallos: fallos
+
+                });
+
+
+                rankingSimon.sort(
+                    function(a, b) {
+
+                        if (
+                            b.nivel !=
+                            a.nivel
+                        ) {
+
+                            return b.nivel -
+                                   a.nivel;
+
+                        }
+
+
+                        return a.fallos -
+                               b.fallos;
+
+                    }
+                );
+
+
+                rankingSimon =
+                    rankingSimon.slice(
+                        0,
+                        5
+                    );
+
+
+                mostrarRankingSimon();
+
+            }
+
+
+            function mostrarRankingSimon() {
+
+                let tabla =
+                    document.getElementById(
+                        "rankingSimon"
+                    );
+
+
+                tabla.innerHTML = "";
+
+
+                for (
+                    let i = 0;
+                    i < rankingSimon.length;
+                    i++
+                ) {
+
+                    let fila =
+                        document.createElement(
+                            "tr"
+                        );
+
+
+                    fila.innerHTML =
+                        "<td>" +
+                        (i + 1) +
+                        "</td>" +
+
+                        "<td>" +
+                        rankingSimon[i].nombre +
+                        "</td>" +
+
+                        "<td>" +
+                        rankingSimon[i].nivel +
+                        "</td>" +
+
+                        "<td>" +
+                        rankingSimon[i].fallos +
+                        "</td>";
+
+
+                    tabla.appendChild(fila);
+
+                }
+
+            }
+
+
+            /* ==================================================
+               RANKING - REACCION
+            ================================================== */
+
+            function guardarReaccion(media) {
+
+                let nombre =
+                    prompt(
+                        "¡Partida terminada!\n\n" +
+                        "Tiempo medio: " +
+                        media +
+                        " ms\n\n" +
+                        "Escribe tu nombre:"
+                    );
+
+
+                if (
+                    nombre === null ||
+                    nombre.trim() == ""
+                ) {
+
+                    return;
+
+                }
+
+
+                nombre = nombre.trim();
+
+
+                rankingReaccion.push({
+
+                    nombre: nombre,
+
+                    media: media
+
+                });
+
+
+                rankingReaccion.sort(
+                    function(a, b) {
+
+                        return a.media -
+                               b.media;
+
+                    }
+                );
+
+
+                rankingReaccion =
+                    rankingReaccion.slice(
+                        0,
+                        5
+                    );
+
+
+                mostrarRankingReaccion();
+
+            }
+
+
+            function mostrarRankingReaccion() {
+
+                let tabla =
+                    document.getElementById(
+                        "rankingReaccion"
+                    );
+
+
+                tabla.innerHTML = "";
+
+
+                for (
+                    let i = 0;
+                    i < rankingReaccion.length;
+                    i++
+                ) {
+
+                    let fila =
+                        document.createElement(
+                            "tr"
+                        );
+
+
+                    fila.innerHTML =
+                        "<td>" +
+                        (i + 1) +
+                        "</td>" +
+
+                        "<td>" +
+                        rankingReaccion[i].nombre +
+                        "</td>" +
+
+                        "<td>" +
+                        rankingReaccion[i].media +
+                        " ms</td>";
+
+
+                    tabla.appendChild(fila);
+
+                }
+
+            }
+
+
+            /* ==================================================
+               INICIAR RANKINGS VACÍOS
+            ================================================== */
+
+            mostrarRankingReflejos();
+
+            mostrarRankingSimon();
+
+            mostrarRankingReaccion();
+
+        </script>
+
     </body>
 </html>
+```
