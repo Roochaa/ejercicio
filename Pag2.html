@@ -1,18 +1,556 @@
-<html>
+HTML
+<!doctype html>
+<html lang="es">
     <head>
+        <title>Juego Snake</title>
 
+        <style>
+
+            body {
+                background-color: #1a1a1a;
+                color: white;
+                font-family: Arial;
+                text-align: center;
+            }
+
+            a {
+                color: white;
+                text-decoration: none;
+                margin: 20px;
+            }
+
+            #juego {
+                width: 500px;
+                height: 500px;
+                margin: 30px auto;
+                background-color: #111;
+                border: 5px solid white;
+                position: relative;
+            }
+
+            .parteSerpiente {
+                width: 25px;
+                height: 25px;
+                background-color: #00ff00;
+                position: absolute;
+            }
+
+            #comida {
+                width: 25px;
+                height: 25px;
+                background-color: red;
+                position: absolute;
+                border-radius: 50%;
+            }
+
+            #informacion {
+                font-size: 22px;
+                margin: 15px;
+            }
+
+            button {
+                padding: 12px 25px;
+                font-size: 18px;
+                margin: 5px;
+                cursor: pointer;
+            }
+
+            #mensaje {
+                font-size: 25px;
+                font-weight: bold;
+                margin: 15px;
+            }
+
+            #controles {
+                font-size: 18px;
+                margin-top: 15px;
+            }
+
+        </style>
     </head>
+
+
     <body>
+
         <a href="./index.html">Menú</a>
         <a href="./Pag1.html">Página 1</a>
-        
-        <h1>
-            HTML
-        </h1>
+        <a href="./Pag3.html">Página 3</a>
 
-        <a href="https://es.wikipedia.org/wiki/Tim_Berners-Lee">Pincha aqui</a>
+        <h1>🐍 SNAKE 🐍</h1>
 
-        <img src="./img/Sir_Tim_Berners-Lee_(cropped).jpg" alt="Tim Berners-Lee" width="500" height="600">
-        
+
+        <div id="juego">
+
+            <div id="comida"></div>
+
+        </div>
+
+
+        <div id="informacion">
+
+            🍎 Puntos:
+            <span id="puntos">0</span>
+
+        </div>
+
+
+        <div id="mensaje">
+            Pulsa EMPEZAR para comenzar
+        </div>
+
+
+        <button id="empezar">
+            EMPEZAR
+        </button>
+
+
+        <div id="controles">
+
+            <p><strong>Controles:</strong></p>
+
+            <p>
+                W = Arriba
+                &nbsp;&nbsp;
+                S = Abajo
+            </p>
+
+            <p>
+                A = Izquierda
+                &nbsp;&nbsp;
+                D = Derecha
+            </p>
+
+            <p>
+                También puedes utilizar las flechas del teclado.
+            </p>
+
+        </div>
+
+
+        <script>
+
+            let juego = document.getElementById("juego");
+
+            let comida = document.getElementById("comida");
+
+            let puntosTexto =
+                document.getElementById("puntos");
+
+            let mensaje =
+                document.getElementById("mensaje");
+
+            let empezar =
+                document.getElementById("empezar");
+
+
+            let serpiente = [];
+
+            let direccion = "derecha";
+
+            let nuevaDireccion = "derecha";
+
+            let puntos = 0;
+
+            let jugando = false;
+
+            let intervalo;
+
+
+            const tamaño = 25;
+
+            const filas = 20;
+
+            const columnas = 20;
+
+
+            empezar.addEventListener("click", function() {
+
+                iniciarJuego();
+
+            });
+
+
+            document.addEventListener("keydown", function(event) {
+
+                let tecla = event.key.toLowerCase();
+
+
+                if (tecla === "w" || tecla === "arrowup") {
+
+                    if (direccion !== "abajo") {
+                        nuevaDireccion = "arriba";
+                    }
+
+                }
+
+
+                if (tecla === "s" || tecla === "arrowdown") {
+
+                    if (direccion !== "arriba") {
+                        nuevaDireccion = "abajo";
+                    }
+
+                }
+
+
+                if (tecla === "a" || tecla === "arrowleft") {
+
+                    if (direccion !== "derecha") {
+                        nuevaDireccion = "izquierda";
+                    }
+
+                }
+
+
+                if (tecla === "d" || tecla === "arrowright") {
+
+                    if (direccion !== "izquierda") {
+                        nuevaDireccion = "derecha";
+                    }
+
+                }
+
+
+                if (tecla === " ") {
+
+                    if (!jugando) {
+                        iniciarJuego();
+                    }
+
+                    event.preventDefault();
+
+                }
+
+            });
+
+
+            function iniciarJuego() {
+
+                clearInterval(intervalo);
+
+
+                serpiente = [
+
+                    {
+                        x: 250,
+                        y: 250
+                    },
+
+                    {
+                        x: 225,
+                        y: 250
+                    },
+
+                    {
+                        x: 200,
+                        y: 250
+                    }
+
+                ];
+
+
+                direccion = "derecha";
+
+                nuevaDireccion = "derecha";
+
+                puntos = 0;
+
+                puntosTexto.textContent = puntos;
+
+                jugando = true;
+
+                mensaje.textContent = "";
+
+
+                colocarComida();
+
+                dibujarSerpiente();
+
+
+                intervalo = setInterval(
+
+                    actualizarJuego,
+
+                    120
+
+                );
+
+            }
+
+
+            function dibujarSerpiente() {
+
+                let partes =
+                    document.querySelectorAll(".parteSerpiente");
+
+
+                partes.forEach(function(parte) {
+
+                    parte.remove();
+
+                });
+
+
+                serpiente.forEach(function(parte) {
+
+                    let elemento =
+                        document.createElement("div");
+
+
+                    elemento.classList.add(
+                        "parteSerpiente"
+                    );
+
+
+                    elemento.style.left =
+                        parte.x + "px";
+
+
+                    elemento.style.top =
+                        parte.y + "px";
+
+
+                    juego.appendChild(elemento);
+
+                });
+
+            }
+
+
+            function moverSerpiente() {
+
+                direccion = nuevaDireccion;
+
+
+                let cabeza = {
+
+                    x: serpiente[0].x,
+
+                    y: serpiente[0].y
+
+                };
+
+
+                if (direccion === "arriba") {
+                    cabeza.y -= tamaño;
+                }
+
+
+                if (direccion === "abajo") {
+                    cabeza.y += tamaño;
+                }
+
+
+                if (direccion === "izquierda") {
+                    cabeza.x -= tamaño;
+                }
+
+
+                if (direccion === "derecha") {
+                    cabeza.x += tamaño;
+                }
+
+
+                serpiente.unshift(cabeza);
+
+
+                if (
+
+                    cabeza.x === comidaX &&
+
+                    cabeza.y === comidaY
+
+                ) {
+
+                    puntos++;
+
+                    puntosTexto.textContent = puntos;
+
+                    colocarComida();
+
+                } else {
+
+                    serpiente.pop();
+
+                }
+
+            }
+
+
+            let comidaX;
+
+            let comidaY;
+
+
+            function colocarComida() {
+
+                let posicionesLibres = [];
+
+                for (let y = 0; y < filas; y++) {
+
+                    for (let x = 0; x < columnas; x++) {
+
+                        let ocupada = false;
+
+
+                        serpiente.forEach(function(parte) {
+
+                            if (
+
+                                parte.x === x * tamaño &&
+
+                                parte.y === y * tamaño
+
+                            ) {
+
+                                ocupada = true;
+
+                            }
+
+                        });
+
+
+                        if (!ocupada) {
+
+                            posicionesLibres.push({
+
+                                x: x * tamaño,
+
+                                y: y * tamaño
+
+                            });
+
+                        }
+
+                    }
+
+                }
+
+
+                if (posicionesLibres.length === 0) {
+
+                    terminarJuego();
+
+                    return;
+
+                }
+
+
+                let posicion =
+
+                    posicionesLibres[
+
+                        Math.floor(
+
+                            Math.random() *
+
+                            posicionesLibres.length
+
+                        )
+
+                    ];
+
+
+                comidaX = posicion.x;
+
+                comidaY = posicion.y;
+
+
+                comida.style.left =
+                    comidaX + "px";
+
+                comida.style.top =
+                    comidaY + "px";
+
+            }
+
+
+            function comprobarChoques() {
+
+                let cabeza = serpiente[0];
+
+
+                if (
+
+                    cabeza.x < 0 ||
+
+                    cabeza.x >= 500 ||
+
+                    cabeza.y < 0 ||
+
+                    cabeza.y >= 500
+
+                ) {
+
+                    terminarJuego();
+
+                    return;
+
+                }
+
+
+                for (
+
+                    let i = 1;
+
+                    i < serpiente.length;
+
+                    i++
+
+                ) {
+
+                    if (
+
+                        cabeza.x === serpiente[i].x &&
+
+                        cabeza.y === serpiente[i].y
+
+                    ) {
+
+                        terminarJuego();
+
+                        return;
+
+                    }
+
+                }
+
+            }
+
+
+            function actualizarJuego() {
+
+                if (!jugando) {
+                    return;
+                }
+
+
+                moverSerpiente();
+
+                comprobarChoques();
+
+                dibujarSerpiente();
+
+            }
+
+
+            function terminarJuego() {
+
+                jugando = false;
+
+                clearInterval(intervalo);
+
+
+                mensaje.textContent =
+
+                    "💥 GAME OVER 💥 - Puntos: " +
+
+                    puntos;
+
+            }
+
+        </script>
+
     </body>
 </html>
+```
